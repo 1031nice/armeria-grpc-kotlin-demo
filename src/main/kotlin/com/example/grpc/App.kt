@@ -11,9 +11,11 @@ import com.linecorp.armeria.server.grpc.GrpcService
 fun main(args: Array<String>) {
     val server = Server.builder()
         .http(8080)
-        .service(GrpcService.builder()
-            .addService(RegionsServiceImpl())
-            .build())
+        .service(
+            GrpcService.builder()
+                .addService(SimpleServiceImpl())
+                .build()
+        )
         .build()
 
     server.start()
