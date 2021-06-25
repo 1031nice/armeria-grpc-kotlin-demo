@@ -9,6 +9,7 @@ suspend fun main() {
         .build()
 
     val stub = SimpleServiceGrpc.newBlockingStub(channel)
+/*
     val area : MutableList<SimpleServiceOuterClass.Area> = mutableListOf()
     area.add(SimpleServiceOuterClass.Area.newBuilder()
         .setX("111.11")
@@ -20,6 +21,12 @@ suspend fun main() {
     val response = stub.saveRegions(SimpleServiceOuterClass.SaveRegionsRequest.newBuilder()
         .setName("서울시")
         .addAllArea(area).build())
+*/
 
-    println(response.stringId)
+    val response = stub.getAoisByRegionId(
+        SimpleServiceOuterClass.GetAoisByRegionIdRequest.newBuilder()
+            .setRegionId("1").build()
+    )
+
+    println(response)
 }
