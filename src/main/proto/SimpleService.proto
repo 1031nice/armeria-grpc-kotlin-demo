@@ -1,0 +1,45 @@
+syntax = "proto3";
+package com.example.grpc;
+
+service SimpleService {
+  rpc saveRegions(SaveRegionsRequest) returns (SaveRegionsResponse);
+  rpc saveAois(SaveAoisRequest) returns (SaveAoisResponse);
+  rpc getAoisByRegionId(GetAoisByRegionIdRequest) returns (GetAoisByRegionIdResponse);
+}
+
+message Area {
+  string x = 1;
+  string y = 2;
+}
+
+message Aois {
+  string aoisId = 1;
+  string name = 2;
+  repeated Area area = 3;
+}
+
+message SaveRegionsRequest {
+  string name = 1;
+  repeated Area area = 2;
+}
+
+message SaveRegionsResponse {
+  string stringId = 1;
+}
+
+message SaveAoisRequest {
+  string name = 1;
+  repeated Area area = 2;
+}
+
+message SaveAoisResponse {
+  string stringId = 1;
+}
+
+message GetAoisByRegionIdRequest {
+  string regionId = 1;
+}
+
+message GetAoisByRegionIdResponse {
+  repeated Aois aois = 1;
+}
