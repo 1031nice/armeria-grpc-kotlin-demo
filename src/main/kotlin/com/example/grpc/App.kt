@@ -7,7 +7,7 @@ fun main(args: Array<String>) {
     val server = Server.builder()
         .http(8080)
         .service(GrpcService.builder()
-            .addService(GreetingServiceImpl())
+            .addService(RegionsServiceImpl())
             .build())
         .build()
 

@@ -8,8 +8,17 @@ suspend fun main() {
         .usePlaintext()
         .build()
 
-    val stub = GreetingServiceGrpc.newBlockingStub(channel)
-    val response = stub.greeting(GreetingServiceOuterClass.HelloRequest.newBuilder().setName("Donghun").build())
+    val stub = RegionsServiceGrpc.newBlockingStub(channel)
+    val response = stub.saveRegions(RegionsServiceOuterClass.SaveRegionsRequest.newBuilder()
+        .setName("서울시")
+        .setArea(RegionsServiceOuterClass.Area.newBuilder()
+            .setX("111.11")
+            .setY("33.33").build())
+        .setArea(RegionsServiceOuterClass.Area.newBuilder()
+            .setX("127.02")
+            .setY("37.742").build()
+        ).build()
+    )
 
-    println(response.greeting)
+    println(response.stringId)
 }
