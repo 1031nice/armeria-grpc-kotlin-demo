@@ -1,0 +1,20 @@
+syntax = "proto3";
+package com.example.grpc;
+
+service RegionsService {
+  rpc saveRegions(SaveRegionsRequest) returns (SaveRegionsResponse);
+}
+
+message Area {
+  string x = 1;
+  string y = 2;
+}
+
+message SaveRegionsRequest {
+  string name = 1;
+  Area area = 2;
+}
+
+message SaveRegionsResponse {
+  string stringId = 1;
+}
