@@ -5,6 +5,7 @@ import com.linecorp.armeria.server.annotation.Get
 import com.linecorp.armeria.server.annotation.Param
 import com.linecorp.armeria.server.annotation.Post
 
+// TODO 응답을 JSON 형식으로 변환
 class ArmeriaHttpClientDemo {
     // 클라이언트는 nested인 경우 어떻게 던지지?
     // 백에서는 그걸 binding해서 하나로 받을 수 있나?
