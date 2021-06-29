@@ -14,7 +14,7 @@ fun main(args: Array<String>) {
         .http(8080)
         .service(
             GrpcService.builder()
-                .addService(SimpleServiceImpl())
+                .addService(SimpleServiceImpl(AreaRepository()))
                 .build()
         )
         .serviceUnder("/docs", DocService())

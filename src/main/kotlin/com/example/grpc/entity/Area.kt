@@ -9,7 +9,7 @@ import javax.persistence.MappedSuperclass
 @MappedSuperclass
 open class Area (
     @Id
-    open var id: Integer? = null,
+    open var id: Int? = null,
     @Column
     open var name: String? = null,
     @Column

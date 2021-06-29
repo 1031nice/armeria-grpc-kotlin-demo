@@ -4,6 +4,7 @@ import com.example.grpc.entity.Aoi
 import com.example.grpc.entity.Area
 import org.hibernate.boot.MetadataSources
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder
+import java.math.BigInteger
 
 /*
     겹치는 구역의 정보를 얻고 싶은 경우
@@ -15,7 +16,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder
 
 class AreaRepository<E: Area> {
 
-    fun save(e: E) {
+    fun save(e: E): BigInteger {
         try {
             // Aoi에 name, area(polygon data)가 잘 들어온다고 가정
             // TODO SessionFactory singleton으로 만들어서 애플리케이션 내에서 한 번만 생성하기
@@ -26,16 +27,22 @@ class AreaRepository<E: Area> {
             val tx = session.transaction
             tx.begin()
 
-            val sqlString = "insert into ${e.javaClass.simpleName} (area, name, id) values (st_geomfromtext(" + "'" + e.area + "', 4326), '" + e.name + "', nextval('id_sequence')"
-            val query = session.createNativeQuery(sqlString)
+            var sqlString = "insert into ${e.javaClass.simpleName} (area, name, id) values (st_geomfromtext(" + "'" + e.area + "', 4326), '" + e.name + "', nextval('id_sequence'))"
+            var query = session.createNativeQuery(sqlString)
             query.executeUpdate()
+
+            sqlString = "SELECT last_value FROM id_sequence"
+            query = session.createNativeQuery(sqlString)
+            val ret = query.resultList.first() as BigInteger
             tx.commit()
+            return ret
         }
         // TODO 예외처리
         catch(e: Exception) { println(e.message) }
+        return BigInteger.ZERO
     }
 
-    fun getAoisIntersectWithRegion(regionId: Integer): List<Aoi> {
+    fun getAoisIntersectWithRegion(regionId: Int): List<Aoi> {
         // 1. regionId로부터 행정지역의 Polygon 정보를 얻어온다
         // 2. 저장된 모든 Aoi와 주어진 하나의 행정지역을 모두 비교한 뒤 intersects한 Aoi를 모두 저장하여 리턴한다
 
