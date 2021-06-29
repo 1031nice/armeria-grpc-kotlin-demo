@@ -1,6 +1,8 @@
 package com.example.grpc
 
+import org.locationtech.jts.geom.Polygon
 import java.sql.*
+import javax.persistence.EntityManagerFactory
 
 /*
     겹치는 구역의 정보를 얻고 싶은 경우
@@ -11,6 +13,7 @@ import java.sql.*
 */
 
 class MyRepository() {
+
     fun saveRegions() {
 
     }
