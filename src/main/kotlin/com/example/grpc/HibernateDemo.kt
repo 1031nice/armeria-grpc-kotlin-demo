@@ -1,6 +1,7 @@
 package com.example.grpc
 
 import com.example.grpc.entity.Aoi
+import com.example.grpc.entity.Area
 import org.hibernate.boot.MetadataSources
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder
 import org.locationtech.jts.geom.Coordinate
@@ -14,7 +15,14 @@ insert into Aoi (area, name) values (st_geomfromtext('POLYGON ((37.517386 127.11
 
 fun main() {
 
-    try {
+    val repo = AreaRepository<Area>()
+    for (aoi in repo.getAoisIntersectWithRegion(Integer(2))) {
+        println("==================")
+        println(aoi.area)
+        println(aoi.name)
+    }
+
+/*    try {
         val registry = StandardServiceRegistryBuilder().configure().build()
         val sessionFactory = MetadataSources(registry).buildMetadata().buildSessionFactory()
         val session = sessionFactory.openSession()
@@ -36,23 +44,30 @@ fun main() {
 //        }
 
         // polygon 데이터 만들기
-        val aoi = Aoi()
-        aoi.name = "한라산"
-        val coordinates = arrayOf(
-            Coordinate(37.517386, 127.112990),
-            Coordinate(37.511687, 127.128048),
-            Coordinate(37.521286, 127.133858),
-            Coordinate(37.527938, 127.119110),
-            Coordinate(37.517386, 127.112990)
-        )
-        val factory = GeometryFactory()
-        val polygon = factory.createPolygon(coordinates)
-        aoi.area = polygon
+//        val aoi = Aoi()
+//        aoi.name = "한라산"
+//        val coordinates = arrayOf(
+//            Coordinate(37.517386, 127.112990),
+//            Coordinate(37.511687, 127.128048),
+//            Coordinate(37.521286, 127.133858),
+//            Coordinate(37.527938, 127.119110),
+//            Coordinate(37.517386, 127.112990)
+//        )
+//        val factory = GeometryFactory()
+//        val polygon = factory.createPolygon(coordinates)
+//        aoi.area = polygon
 
         // insert
 //        val query2 = session.createNativeQuery("insert into Aoi (area, name, aoi_id) values (st_geomfromtext(" + "'" + aoi.area + "', 4326), '" + aoi.name + "', 1)")
-        val query2 = session.createNativeQuery("insert into ${aoi.javaClass.simpleName} (area, name, id) values (st_geomfromtext(" + "'" + aoi.area + "', 4326), '" + aoi.name + "', nextval('id_sequence'))")
-        query2.executeUpdate()
+//        val query2 = session.createNativeQuery("insert into ${aoi.javaClass.simpleName} (area, name, id) values (st_geomfromtext(" + "'" + aoi.area + "', 4326), '" + aoi.name + "', nextval('id_sequence'))")
+        val sqlString = "select ST_AsText(area) as area, ST_SRID(area) as srid from region where id = 1;"
+        val query2 = session.createNativeQuery(sqlString)
+        for (any in query2.resultList) {
+            val any = any as Array<*>
+            for(i in any)
+                println(i)
+        }
+//        query2.executeUpdate()
 //        session.persist(aoi)
 
         tx.commit()
@@ -60,5 +75,5 @@ fun main() {
     catch(e : Exception) {
         e.printStackTrace()
         println(e.message)
-    }
+    }*/
 }

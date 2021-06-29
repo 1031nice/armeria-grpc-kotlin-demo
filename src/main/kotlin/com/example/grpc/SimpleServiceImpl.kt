@@ -1,6 +1,7 @@
 package com.example.grpc
 
 import com.example.grpc.entity.Aoi
+import com.example.grpc.entity.Area
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 
@@ -20,7 +21,7 @@ class SimpleServiceImpl : SimpleServiceGrpcKt.SimpleServiceCoroutineImplBase() {
             coordinates.add(Coordinate(point.x.toDouble(), point.y.toDouble()))
         val factory = GeometryFactory()
         val polygon = factory.createPolygon(coordinates.toTypedArray())
-        aoi.area = polygon
+        aoi.area = polygon.toString() // TODO 이거 되나
 
         println("debug: ${aoi.name}")
         println("debug: ${aoi.area}")
@@ -32,9 +33,9 @@ class SimpleServiceImpl : SimpleServiceGrpcKt.SimpleServiceCoroutineImplBase() {
 
     override suspend fun getAoisByRegionId(request: SimpleServiceOuterClass.GetAoisByRegionIdRequest): SimpleServiceOuterClass.GetAoisByRegionIdResponse {
         // TODO 데이터베이스에서 해당 행정지역에 Aois가 있는지 검사
-        val repository = MyRepository()
+        val repository = AreaRepository<Area>()
 
-        val list = repository.getAoisByRegionId(request.regionId)
+        val list = repository.getAoisIntersectWithRegion(Integer(request.regionId.toInt()))
         for(i in list) {
             println(i.name)
         }

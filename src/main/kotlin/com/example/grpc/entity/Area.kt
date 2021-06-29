@@ -13,7 +13,7 @@ open class Area (
     @Column
     open var name: String? = null,
     @Column
-    open var area: Polygon? = null,
+    open var area: String? = null, // convert string(Polygon) to Polygon 방법을 못찾아서 일단 String
 ) {
     constructor() : this(null, "", null)
 }
