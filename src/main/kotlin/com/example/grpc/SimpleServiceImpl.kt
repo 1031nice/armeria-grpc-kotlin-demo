@@ -1,17 +1,32 @@
 package com.example.grpc
 
+import com.example.grpc.entity.Aoi
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.GeometryFactory
+
 class SimpleServiceImpl : SimpleServiceGrpcKt.SimpleServiceCoroutineImplBase() {
     override suspend fun saveRegions(request: SimpleServiceOuterClass.SaveRegionsRequest): SimpleServiceOuterClass.SaveRegionsResponse {
-
-        println(request)
         return SimpleServiceOuterClass.SaveRegionsResponse.newBuilder()
             .setStringId("1") // TODO 데이터베이스에 저장 후 저장된 아이디 리턴
             .build()
     }
 
     override suspend fun saveAois(request: SimpleServiceOuterClass.SaveAoisRequest): SimpleServiceOuterClass.SaveAoisResponse {
+        val aoi = Aoi()
+        aoi.name = request.name
+        val points = request.areaList
+        val coordinates = mutableListOf<Coordinate>()
+        for(point in points)
+            coordinates.add(Coordinate(point.x.toDouble(), point.y.toDouble()))
+        val factory = GeometryFactory()
+        val polygon = factory.createPolygon(coordinates.toTypedArray())
+        aoi.area = polygon
+
+        println("debug: ${aoi.name}")
+        println("debug: ${aoi.area}")
+
         return SimpleServiceOuterClass.SaveAoisResponse.newBuilder()
-            .setStringId("1") // TODO 데이터베이스에 저장 후 저장된 아이디 리턴
+            .setStringId("987") // TODO 데이터베이스에 저장 후 저장된 아이디 리턴
             .build()
     }
 

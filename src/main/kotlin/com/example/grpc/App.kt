@@ -1,6 +1,7 @@
 package com.example.grpc
 
 import com.linecorp.armeria.server.Server
+import com.linecorp.armeria.server.docs.DocService
 import com.linecorp.armeria.server.grpc.GrpcService
 
 /*
@@ -16,6 +17,7 @@ fun main(args: Array<String>) {
                 .addService(SimpleServiceImpl())
                 .build()
         )
+        .serviceUnder("/docs", DocService())
         .build()
 
     server.start()

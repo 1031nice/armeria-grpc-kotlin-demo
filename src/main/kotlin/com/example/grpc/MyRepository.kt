@@ -1,5 +1,9 @@
 package com.example.grpc
 
+import com.example.grpc.entity.Region
+import com.example.grpc.entity.Aoi
+import org.hibernate.boot.MetadataSources
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder
 import org.locationtech.jts.geom.Polygon
 import java.sql.*
 import javax.persistence.EntityManagerFactory
@@ -14,12 +18,44 @@ import javax.persistence.EntityManagerFactory
 
 class MyRepository() {
 
-    fun saveRegions() {
+    fun saveRegions(region: Region) {
+        try {
+            // Aoi에 name, area(polygon data)가 잘 들어온다고 가정
+            // TODO SessionFactory singleton으로 만들어서 애플리케이션 내에서 한 번만 생성하기
+            // Session은 EntityManager 자식이니까 transaction당 하나만 만들어지겠지? 싱글톤으로 만들면 안되겠지?
+            val registry = StandardServiceRegistryBuilder().configure().build()
+            val sessionFactory = MetadataSources(registry).buildMetadata().buildSessionFactory()
+            val session = sessionFactory.openSession()
+            val tx = session.transaction
+            tx.begin()
 
+            val sqlString = "insert into Aoi (area, name, region_id) values (st_geomfromtext(" + "'" + region.area + "', 4326), '" + region.name + "', nextval('id_sequence')"
+            val query2 = session.createNativeQuery(sqlString)
+            query2.executeUpdate()
+            tx.commit()
+        } catch(e: Exception) {
+
+        }
     }
 
-    fun saveAois() {
+    fun saveAois(aoi: Aoi) {
+        try {
+            // Aoi에 name, area(polygon data)가 잘 들어온다고 가정
+            // TODO SessionFactory singleton으로 만들어서 애플리케이션 내에서 한 번만 생성하기
+                // Session은 EntityManager 자식이니까 transaction당 하나만 만들어지겠지? 싱글톤으로 만들면 안되겠지?
+            val registry = StandardServiceRegistryBuilder().configure().build()
+            val sessionFactory = MetadataSources(registry).buildMetadata().buildSessionFactory()
+            val session = sessionFactory.openSession()
+            val tx = session.transaction
+            tx.begin()
 
+            val sqlString = "insert into Aoi (area, name, aoi_id) values (st_geomfromtext(" + "'" + aoi.area + "', 4326), '" + aoi.name + "', nextval('id_sequence')"
+            val query2 = session.createNativeQuery(sqlString)
+            query2.executeUpdate()
+            tx.commit()
+        } catch(e: Exception) {
+
+        }
     }
 
     fun getAoisByRegionId(regionId: String): List<SimpleServiceOuterClass.Aois> {

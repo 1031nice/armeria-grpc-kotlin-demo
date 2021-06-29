@@ -1,7 +1,10 @@
 package com.example.grpc
 
+import com.example.grpc.entity.Aoi
 import org.hibernate.boot.MetadataSources
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.GeometryFactory
 
 /*
 create table aoi( id uuid DEFAULT uuid_generate_v4 (), name text, area geometry('Polygon', 4326));
@@ -33,22 +36,23 @@ fun main() {
 //        }
 
         // polygon 데이터 만들기
-//        val aoi = Aoi()
-//        aoi.name = "한라산"
-//        val coordinates = arrayOf(
-//            Coordinate(37.517386, 127.112990),
-//            Coordinate(37.511687, 127.128048),
-//            Coordinate(37.521286, 127.133858),
-//            Coordinate(37.527938, 127.119110),
-//            Coordinate(37.517386, 127.112990)
-//        )
-//        val factory = GeometryFactory()
-//        val polygon = factory.createPolygon(coordinates)
-//        aoi.area = polygon
+        val aoi = Aoi()
+        aoi.name = "한라산"
+        val coordinates = arrayOf(
+            Coordinate(37.517386, 127.112990),
+            Coordinate(37.511687, 127.128048),
+            Coordinate(37.521286, 127.133858),
+            Coordinate(37.527938, 127.119110),
+            Coordinate(37.517386, 127.112990)
+        )
+        val factory = GeometryFactory()
+        val polygon = factory.createPolygon(coordinates)
+        aoi.area = polygon
 
         // insert
 //        val query2 = session.createNativeQuery("insert into Aoi (area, name, aoi_id) values (st_geomfromtext(" + "'" + aoi.area + "', 4326), '" + aoi.name + "', 1)")
-//        query2.executeUpdate()
+        val query2 = session.createNativeQuery("insert into ${aoi.javaClass.simpleName} (area, name, id) values (st_geomfromtext(" + "'" + aoi.area + "', 4326), '" + aoi.name + "', nextval('id_sequence'))")
+        query2.executeUpdate()
 //        session.persist(aoi)
 
         tx.commit()
