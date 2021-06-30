@@ -24,7 +24,7 @@ message SaveRegionsRequest {
 }
 
 message SaveRegionsResponse {
-  string stringId = 1;
+  string stringId = 1; // id로 바꿀것
 }
 
 message SaveAoisRequest {
@@ -33,7 +33,7 @@ message SaveAoisRequest {
 }
 
 message SaveAoisResponse {
-  string stringId = 1;
+  string stringId = 1; // id로 바꿀것
 }
 
 message GetAoisByRegionIdRequest {

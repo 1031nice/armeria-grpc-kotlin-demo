@@ -16,3 +16,7 @@ insert region
 INSERT INTO region VALUES ('서울시', st_geomfromtext('Polygon((126.835 37.688, 127.155 37.702, 127.184 37.474, 126.821 37.454, 126.835 37.688))', 4326), 1);
 INSERT INTO region VALUES ('과천시', st_geomfromtext('Polygon((126.998 37.463, 127.028 37.436, 126.992 37.403, 126.965 37.421, 126.998 37.463))', 4326), 2);
 INSERT INTO region VALUES ('의정부시', st_geomfromtext('Polygon((127.025 37.766, 127.096 37.766, 127.099 37.724, 127.035 37.705, 127.020 37.742, 127.025 37.766))', 4326), nextval('id_sequence'));
+겹치는 구역의 정보를 얻고 싶은 경우 예시 쿼리
+select name, area from region where ST_Intersects(area, 'SRID=4326;POLYGON((126.835 37.688,127.155 37.702,127.184 37.474,126.821 37.454,126.835 37.688))');
+전체 구역 중 해당 aoi와 겹치는 구역에 대해서 t로, 겹치지 않는 구역에 대해서 f로 모든 구역의 정보를 얻고 싶은 예시 쿼리
+select ST_Intersects(area, 'SRID=4326;POLYGON((126.835 37.688,127.155 37.702,127.184 37.474,126.821 37.454,126.835 37.688))') from region;
