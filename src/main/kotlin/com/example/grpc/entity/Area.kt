@@ -9,11 +9,12 @@ import javax.persistence.MappedSuperclass
 @MappedSuperclass
 open class Area (
     @Id
+    @GeneratedValue
     open var id: Int? = null,
     @Column
     open var name: String? = null,
     @Column
-    open var area: String? = null, // convert string(Polygon) to Polygon 방법을 못찾아서 일단 String
+    open var area: Polygon? = null, // convert string(Polygon) to Polygon 방법을 못찾아서 일단 String
 ) {
     constructor() : this(null, "", null)
 }

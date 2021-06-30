@@ -2,9 +2,10 @@ package com.example.grpc
 
 import com.example.grpc.entity.Aoi
 import com.example.grpc.entity.Area
+import com.example.grpc.entity.Region
 import org.hibernate.boot.MetadataSources
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder
-import java.math.BigInteger
+import java.io.Serializable
 
 /*
     겹치는 구역의 정보를 얻고 싶은 경우
@@ -16,7 +17,7 @@ import java.math.BigInteger
 
 class AreaRepository<E: Area> {
 
-    fun save(e: E): BigInteger {
+    fun save(e: E): Serializable {
         try {
             // Aoi에 name, area(polygon data)가 잘 들어온다고 가정
             // TODO SessionFactory singleton으로 만들어서 애플리케이션 내에서 한 번만 생성하기
@@ -26,20 +27,13 @@ class AreaRepository<E: Area> {
             val session = sessionFactory.openSession()
             val tx = session.transaction
             tx.begin()
-
-            var sqlString = "insert into ${e.javaClass.simpleName} (area, name, id) values (st_geomfromtext(" + "'" + e.area + "', 4326), '" + e.name + "', nextval('id_sequence'))"
-            var query = session.createNativeQuery(sqlString)
-            query.executeUpdate()
-
-            sqlString = "SELECT last_value FROM id_sequence"
-            query = session.createNativeQuery(sqlString)
-            val ret = query.resultList.first() as BigInteger
+            val saveId = session.save(e)
             tx.commit()
-            return ret
+            return saveId
         }
         // TODO 예외처리
         catch(e: Exception) { println(e.message) }
-        return BigInteger.ZERO
+        return -1
     }
 
     fun getAoisIntersectWithRegion(regionId: Int): List<Aoi> {
@@ -55,21 +49,12 @@ class AreaRepository<E: Area> {
             val sessionFactory = MetadataSources(registry).buildMetadata().buildSessionFactory()
             val session = sessionFactory.openSession()
 
-            var sqlString = "select ST_AsText(area) as area, ST_SRID(area) as srid from region where id = $regionId;"
-            var query = session.createNativeQuery(sqlString)
-            var result = query.resultList.first() as Array<*>
-            val polygon: String = result[0] as String
-            val srid = result[1]
+            val region = session.find(Region::class.java, regionId)
 
-            sqlString = "SELECT name, ST_AsText(area) as area, id FROM AOI WHERE ST_Intersects('SRID=$srid;$polygon', area)"
-            query = session.createNativeQuery(sqlString)
-            for (any in query.resultList) {
-                val any = any as Array<*>
-                var aoi = Aoi()
-                aoi.name = any[0] as String?
-                aoi.area = any[1] as String?
-                ret.add(aoi)
-            }
+            val sqlString = "SELECT * FROM AOI WHERE ST_Intersects('SRID=${region.area!!.srid};${region.area.toString()}', area)"
+            val query = session.createNativeQuery(sqlString, Aoi::class.java)
+            for (any in query.resultList)
+                ret.add(any as Aoi)
             return ret
         }
         // TODO 예외처리

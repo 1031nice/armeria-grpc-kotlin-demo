@@ -20,7 +20,7 @@ class SimpleServiceImpl(
             coordinates.add(Coordinate(point.x.toDouble(), point.y.toDouble()))
         val factory = GeometryFactory()
         val polygon = factory.createPolygon(coordinates.toTypedArray())
-        region.area = polygon.toString() // 이거 되나
+//        region.area = polygon.toString() // 이거 되나
 
         println("debug: ${region.name}")
         println("debug: ${region.area}")
@@ -41,7 +41,7 @@ class SimpleServiceImpl(
             coordinates.add(Coordinate(point.x.toDouble(), point.y.toDouble()))
         val factory = GeometryFactory()
         val polygon = factory.createPolygon(coordinates.toTypedArray())
-        aoi.area = polygon.toString() // 이거 되나
+//        aoi.area = polygon.toString() // 이거 되나
 
         println("debug: ${aoi.name}")
         println("debug: ${aoi.area}")
