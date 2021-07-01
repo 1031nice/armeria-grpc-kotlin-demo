@@ -13,7 +13,7 @@ internal class AreaRepositoryTest : FunSpec() {
 
         test("save") {
             // When Aoi가 DB에 저장이 되면
-            val areaRepository = AreaRepository<Area>()
+            val areaRepository = AreaRepository<Area>() // Mock 객체로 바꿔야할 것 같다
             val aoi = Aoi()
             aoi.name = "한라산"
                 val coordinates = arrayOf(

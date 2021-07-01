@@ -1,10 +1,7 @@
 package com.example.grpc
 
-import com.example.grpc.entity.Aoi
+import com.example.grpc.converter.toEntity
 import com.example.grpc.entity.Area
-import com.example.grpc.entity.Region
-import org.locationtech.jts.geom.Coordinate
-import org.locationtech.jts.geom.GeometryFactory
 
 class SimpleServiceImpl(
 
@@ -12,17 +9,7 @@ class SimpleServiceImpl(
 
 ) : SimpleServiceGrpcKt.SimpleServiceCoroutineImplBase() {
     override suspend fun saveRegions(request: SimpleServiceOuterClass.SaveRegionsRequest): SimpleServiceOuterClass.SaveRegionsResponse {
-        // request의 정보로부터 Region 생성 후 데이터 바인딩
-        // TODO saveAoi()와 중복
-        val region = Region()
-        val points = request.areaList
-        val coordinates = mutableListOf<Coordinate>()
-        for(point in points)
-            coordinates.add(Coordinate(point.x.toDouble(), point.y.toDouble()))
-        val factory = GeometryFactory()
-        val polygon = factory.createPolygon(coordinates.toTypedArray())
-        region.name = request.name
-        region.area = polygon
+        val region = request.toEntity()
         val regionId = areaRepository.save(region)
 
         return SimpleServiceOuterClass.SaveRegionsResponse.newBuilder()
@@ -31,16 +18,7 @@ class SimpleServiceImpl(
     }
 
     override suspend fun saveAois(request: SimpleServiceOuterClass.SaveAoisRequest): SimpleServiceOuterClass.SaveAoisResponse {
-        // request의 정보로부터 Aoi 생성 후 데이터 바인딩
-        val aoi = Aoi()
-        val points = request.areaList
-        val coordinates = mutableListOf<Coordinate>()
-        for(point in points)
-            coordinates.add(Coordinate(point.x.toDouble(), point.y.toDouble()))
-        val factory = GeometryFactory()
-        val polygon = factory.createPolygon(coordinates.toTypedArray())
-        aoi.name = request.name
-        aoi.area = polygon
+        val aoi = request.toEntity()
         val aoiId = areaRepository.save(aoi)
 
         return SimpleServiceOuterClass.SaveAoisResponse.newBuilder()
@@ -66,13 +44,5 @@ class SimpleServiceImpl(
             )
         }
         return responseBuilder.build()
-
-//        return SimpleServiceOuterClass.GetAoisByRegionIdResponse.newBuilder()
-//            .setAois(0,
-//                SimpleServiceOuterClass.Aois.newBuilder()
-//                    .setAoisId("1")
-//                    .setName("dummy-aoi")
-//                    .setArea(0, SimpleServiceOuterClass.Area.newBuilder().setX("1").setY("2").build())
-//            ).build()
     }
 }
